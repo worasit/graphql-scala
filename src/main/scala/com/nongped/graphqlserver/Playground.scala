@@ -1,6 +1,7 @@
 package com.nongped.graphqlserver
 
-import com.nongped.graphqlserver.H2Schemas._
+import com.nongped.graphqlserver.schemas.H2Schemas
+import com.nongped.graphqlserver.schemas.H2Schemas._
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.{Await, ExecutionContext, Future}

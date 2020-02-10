@@ -2,34 +2,35 @@ package com.nongped.graphqlserver
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.server.Directives.{complete, get, path, _}
+import akka.http.scaladsl.server.Directives.{path, _}
 import akka.stream.ActorMaterializer
+import spray.json.JsValue
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import scala.concurrent.duration._
 
-
-import scala.concurrent.ExecutionContextExecutor
-import scala.io.StdIn
+import scala.concurrent.{Await, ExecutionContextExecutor}
 
 object Server extends App {
-  val port = 9000
+  val port = 9090
 
   implicit val actorSystem: ActorSystem = ActorSystem("GQLServer")
   implicit val actorMaterializer: ActorMaterializer = ActorMaterializer()(actorSystem)
   implicit val executionContext: ExecutionContextExecutor = actorSystem.getDispatcher
 
-  val route =
-    path("hello") {
-      get {
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-      }
+  val route = (post & path(pm = "graphql")) {
+    entity(as[JsValue]) { requestJson =>
+      GraphQLServer.endpoint(requestJson)
+    } ~ {
+      getFromResource(resourceName = "graphiql.html")
     }
+  }
 
-  val bindingF = Http()(actorSystem).bindAndHandle(route, "localhost", port)(actorMaterializer)
 
+  Http()(actorSystem).bindAndHandle(route, "localhost", port)(actorMaterializer)
   println(s"The server is running at: http://localhost:${port}")
 
-  StdIn.readLine()
-  bindingF
-    .flatMap(_.unbind())
-    .onComplete(_ => actorSystem.terminate())
+  def shutdown = {
+    actorSystem.terminate()
+    Await.result(actorSystem.whenTerminated, 30 seconds)
+  }
 }

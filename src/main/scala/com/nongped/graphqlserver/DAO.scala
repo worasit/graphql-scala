@@ -1,6 +1,6 @@
 package com.nongped.graphqlserver
 
-import com.nongped.graphqlserver.H2Schemas._
+import com.nongped.graphqlserver.schemas.H2Schemas._
 import com.nongped.graphqlserver.models.{Coffee, Link, Supplier}
 import slick.jdbc.H2Profile.api._
 

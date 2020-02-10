@@ -1,14 +1,11 @@
-package com.nongped.graphqlserver
+package com.nongped.graphqlserver.schemas
 
-import java.nio.DoubleBuffer
-
-import com.nongped.graphqlserver.models.{Coffee, Link, Supplier}
-import slick.lifted.{ForeignKeyQuery, ProvenShape}
+import com.nongped.graphqlserver.DAO
+import com.nongped.graphqlserver.models._
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
 
 object H2Schemas {
 
@@ -26,7 +23,7 @@ object H2Schemas {
 
     def zip: Rep[String] = column[String]("zip")
 
-    override def * : ProvenShape[Supplier] = (id, name, street, city, state, zip).mapTo[Supplier]
+    override def * = (id, name, street, city, state, zip).mapTo[Supplier]
   }
 
   class Coffees(tag: Tag) extends Table[Coffee](tag, _tableName = "COFFEES") {
@@ -40,9 +37,9 @@ object H2Schemas {
 
     def total: Rep[Int] = column[Int]("total")
 
-    override def * : ProvenShape[Coffee] = (name, supplierId, price, sales, total).mapTo[Coffee]
+    override def * = (name, supplierId, price, sales, total).mapTo[Coffee]
 
-    def supplier: ForeignKeyQuery[Suppliers, Supplier] = foreignKey("supplierId", supplierId, suppliers)(_.id)
+    def supplier = foreignKey("supplierId", supplierId, suppliers)(_.id)
   }
 
   class Links(tag: Tag) extends Table[Link](tag, _tableName = "LINKS") {
@@ -52,7 +49,7 @@ object H2Schemas {
 
     def description: Rep[String] = column[String]("DESCRIPTION")
 
-    override def * : ProvenShape[Link] = (id, url, description).mapTo[Link]
+    override def * = (id, url, description).mapTo[Link]
   }
 
   // Table Query
