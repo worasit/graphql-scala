@@ -22,7 +22,7 @@ object Playground extends App {
   }
   val allCoffeesLowerThan9 = coffees.filter(_.price < 9.0).sortBy(_.price.desc).map(c => (c.name, c.price))
 
-  val res = Await.result(dao.db.run(allCoffeesLowerThan9.result), 60 seconds)
+  val res = Await.result(dao.allLinks, 60 seconds)
   res.foreach(println)
 
   println("App Finished")

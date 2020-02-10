@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "org.sangria-graphql" %% "sangria-spray-json" % Version.sangriaSprayJson,
 
   "com.typesafe.akka" %% "akka-http" % Version.akkaHttp,
+  "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttp,
   "com.typesafe.akka" %% "akka-stream" % Version.akkaStream,
 
   "com.h2database" % "h2" % Version.h2,

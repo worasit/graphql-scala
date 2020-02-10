@@ -2,7 +2,7 @@ package com.nongped.graphqlserver
 
 import java.nio.DoubleBuffer
 
-import com.nongped.graphqlserver.models.{Coffee, Supplier}
+import com.nongped.graphqlserver.models.{Coffee, Link, Supplier}
 import slick.lifted.{ForeignKeyQuery, ProvenShape}
 import slick.jdbc.H2Profile.api._
 
@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 object H2Schemas {
 
   // Table Schema
-  class Suppliers(tag: Tag) extends Table[Supplier](tag, "SUPPLIERS") {
+  class Suppliers(tag: Tag) extends Table[Supplier](tag, _tableName = "SUPPLIERS") {
     def id: Rep[Int] = column[Int]("id", O.PrimaryKey)
 
     def name: Rep[String] = column[String]("name")
@@ -29,7 +29,7 @@ object H2Schemas {
     override def * : ProvenShape[Supplier] = (id, name, street, city, state, zip).mapTo[Supplier]
   }
 
-  class Coffees(tag: Tag) extends Table[Coffee](tag, "COFFEES") {
+  class Coffees(tag: Tag) extends Table[Coffee](tag, _tableName = "COFFEES") {
     def name: Rep[String] = column[String]("name")
 
     def supplierId: Rep[Int] = column[Int]("supplierId")
@@ -45,17 +45,34 @@ object H2Schemas {
     def supplier: ForeignKeyQuery[Suppliers, Supplier] = foreignKey("supplierId", supplierId, suppliers)(_.id)
   }
 
+  class Links(tag: Tag) extends Table[Link](tag, _tableName = "LINKS") {
+    def id: Rep[Int] = column[Int]("ID", O.PrimaryKey)
+
+    def url: Rep[String] = column[String]("URL")
+
+    def description: Rep[String] = column[String]("DESCRIPTION")
+
+    override def * : ProvenShape[Link] = (id, url, description).mapTo[Link]
+  }
+
   // Table Query
   val suppliers = TableQuery[Suppliers]
   val coffees = TableQuery[Coffees]
+  val links = TableQuery[Links]
 
   val setup = DBIO.seq(
-    (suppliers.schema ++ coffees.schema).create,
+    (suppliers.schema ++ coffees.schema ++ links.schema).create,
     // Insert some suppliers
     suppliers += Supplier(101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"),
     suppliers += Supplier(49, "Superior Coffee", "1 Party Place", "Mendocino", "CA", "95460"),
     suppliers += Supplier(150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966"),
 
+    // Insert Links
+    links ++= Seq(
+      Link(1, "http://howtographl.com", "Awesome community driven GraphQL tutorial"),
+      Link(2, "http://graphql.org", "Official GraphQL web page"),
+      Link(3, "https://facebook.github.io/graphql/", "GraphQL specification")
+    ),
     // Insert some coffees (using JDBC's batch insert feature, if supported by the DB)
     coffees ++= Seq(
       Coffee("Colombian", 101, 7.99, 0, 0),
