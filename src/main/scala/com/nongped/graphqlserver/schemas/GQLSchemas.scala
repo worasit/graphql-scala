@@ -18,11 +18,34 @@ object GQLSchemas {
     )
   )
 
+  // Define Arguments
+  val Id = Argument("id", IntType, description = "id of specific link")
+  val Ids = Argument("ids", ListInputType(IntType), description = "collection of link's id")
+
   // Define Query
   val LinkQuery: ObjectType[ApplicationContext, Unit] = ObjectType[ApplicationContext, Unit](
     name = "Query",
     fields = fields[ApplicationContext, Unit](
-      Field("allLinks", fieldType = ListType(LinkType), resolve = _.ctx.dao.allLinks)
+      Field(
+        "allLinks",
+        fieldType = ListType(LinkType),
+        resolve = _.ctx.dao.allLinks,
+        description = Option("Gets all available links")
+      ),
+      Field(
+        name = "getLink",
+        fieldType = OptionType(LinkType),
+        arguments = Id :: Nil,
+        resolve = c => c.ctx.dao.getLink(c.arg(Id)),
+        description = Option("Gets a specific link by ID")
+      ),
+      Field(
+        name = "getLinks",
+        fieldType = ListType(LinkType),
+        arguments = Ids :: Nil,
+        resolve = c => c.ctx.dao.getLinks(c.arg(Ids)),
+        description = Option("Gets collection of links by IDs")
+      )
     )
   )
 
