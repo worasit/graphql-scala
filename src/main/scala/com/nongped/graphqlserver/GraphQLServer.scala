@@ -25,7 +25,7 @@ object GraphQLServer {
     val JsObject(fields) = requestJson
     val JsString(query) = fields("query")
 
-    QueryParser.parse(query) match {
+     QueryParser.parse(query) match {
       case util.Success(queryAst) =>
         val operation = fields.get("operationName").collect {
           case JsString(value) => value

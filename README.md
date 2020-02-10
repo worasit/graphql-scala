@@ -1,4 +1,4 @@
-# graphql-scala
+# GraphQL Scala
+The example project of the `Akka HTTP server` that applied GQL
+of the Akka HTTP server that applied GQL
 
-## Slick h2 examples
-https://scala-slick.org/doc/3.0.0/gettingstarted.html
