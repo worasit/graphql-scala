@@ -3,7 +3,7 @@ package com.nongped.graphqlserver
 import java.nio.DoubleBuffer
 
 import com.nongped.graphqlserver.models.{Coffee, Supplier}
-import slick.lifted.ProvenShape
+import slick.lifted.{ForeignKeyQuery, ProvenShape}
 import slick.driver.H2Driver.api._
 
 
@@ -40,6 +40,8 @@ object H2Schemas {
     def total: Rep[Int] = column[Int]("total")
 
     override def * : ProvenShape[Coffee] = (name, supplierId, sales, total).mapTo[Coffee]
+
+    def supplier: ForeignKeyQuery[Suppliers, Supplier] = foreignKey("supplierId", supplierId, suppliers)(_.id)
   }
 
   val coffees = TableQuery[Coffees]
