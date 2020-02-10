@@ -6,18 +6,19 @@ import akka.http.scaladsl.server.Directives.{path, _}
 import akka.stream.ActorMaterializer
 import spray.json.JsValue
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import scala.concurrent.duration._
+import akka.http.scaladsl.server.Route
 
+import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
 object Server extends App {
-  val port = 9090
+  val port = 8080
 
   implicit val actorSystem: ActorSystem = ActorSystem("GQLServer")
   implicit val actorMaterializer: ActorMaterializer = ActorMaterializer()(actorSystem)
   implicit val executionContext: ExecutionContextExecutor = actorSystem.getDispatcher
 
-  val route = (post & path(pm = "graphql")) {
+  val route: Route = (post & path(pm = "graphql")) {
     entity(as[JsValue]) { requestJson =>
       GraphQLServer.endpoint(requestJson)
     } ~ {
