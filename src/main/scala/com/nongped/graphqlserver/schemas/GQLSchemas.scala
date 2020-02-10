@@ -33,14 +33,14 @@ object GQLSchemas {
         description = Option("Gets all available links")
       ),
       Field(
-        name = "getLink",
+        name = "link",
         fieldType = OptionType(LinkType),
         arguments = Id :: Nil,
         resolve = c => c.ctx.dao.getLink(c.arg(Id)),
         description = Option("Gets a specific link by ID")
       ),
       Field(
-        name = "getLinks",
+        name = "links",
         fieldType = ListType(LinkType),
         arguments = Ids :: Nil,
         resolve = c => c.ctx.dao.getLinks(c.arg(Ids)),
