@@ -30,6 +30,6 @@ object Server extends App with LazyLogging {
 
   StdIn.readLine()
   bindingF
-    .flatMap((x: Http.ServerBinding) => x.unbind())
+    .flatMap(_.unbind())
     .onComplete(_ => actorSystem.terminate())
 }

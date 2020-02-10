@@ -9,6 +9,9 @@ object Dependencies {
 
     val akkaHttp = "10.1.11"
     val akkaStream = "2.5.26"
+
+    val h2 = "1.4.196"
+    val slick = "3.2.1"
   }
 
 }
