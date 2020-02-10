@@ -6,6 +6,9 @@ object Dependencies {
 
     val sangriaGQL = "1.4.2"
     val sangriaSprayJson = "1.0.1"
+
+    val akkaHttp = "10.1.11"
+    val akkaStream = "2.5.26"
   }
 
 }
