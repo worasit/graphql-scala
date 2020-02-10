@@ -1,7 +1,12 @@
 package com.nongped.graphqlserver
 
-import org.h2.engine.Database
+import com.nongped.graphqlserver.H2Schemas._
+import com.nongped.graphqlserver.models.{Coffee, Supplier}
+import slick.jdbc.H2Profile.api._
 
-class DAO(db: Database) {
+import scala.concurrent.Future
 
+class DAO(val db: Database) {
+  def allSuppliers: Future[Seq[Supplier]] = db.run(suppliers.result)
+  def allCoffees: Future[Seq[Coffee]] = db.run(coffees.result)
 }
