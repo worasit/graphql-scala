@@ -1,7 +1,7 @@
 package com.nongped.graphqlserver.schemas
 
 import com.nongped.graphqlserver.ApplicationContext
-import com.nongped.graphqlserver.models.Link
+import com.nongped.graphqlserver.models.{Coffee, Link, Supplier}
 import sangria.schema._
 import sangria.macros.derive._
 
@@ -18,6 +18,9 @@ object GQLSchemas {
     )
   )
 
+  val SupplierType: ObjectType[Unit, Supplier] = deriveObjectType[Unit, Supplier]()
+  val CoffeeType: ObjectType[Unit, Coffee] = deriveObjectType[Unit, Coffee]()
+
   // Define Arguments
   val Id = Argument("id", IntType, description = "id of specific link")
   val Ids = Argument("ids", ListInputType(IntType), description = "collection of link's id")
@@ -26,6 +29,18 @@ object GQLSchemas {
   val LinkQuery: ObjectType[ApplicationContext, Unit] = ObjectType[ApplicationContext, Unit](
     name = "Query",
     fields = fields[ApplicationContext, Unit](
+      Field(
+        "suppliers",
+        fieldType = ListType(SupplierType),
+        resolve = _.ctx.dao.allSuppliers,
+        description = Option("Gets all available suppliers")
+      ),
+      Field(
+        "coffees",
+        fieldType = ListType(CoffeeType),
+        resolve = _.ctx.dao.allCoffees,
+        description = Option("Gets all coffees")
+      ),
       Field(
         "allLinks",
         fieldType = ListType(LinkType),
@@ -50,5 +65,5 @@ object GQLSchemas {
   )
 
   // Define SchemaDefinition
-  val LinkSchemaDefinition = Schema(LinkQuery)
+  val LinkSchemaDefinition: Schema[ApplicationContext, Unit] = Schema(LinkQuery)
 }
