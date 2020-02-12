@@ -2,9 +2,12 @@ package com.nongped.graphqlserver.schemas
 
 import com.nongped.graphqlserver.ApplicationContext
 import com.nongped.graphqlserver.models.{Coffee, Link, Supplier}
+import sangria.execution.deferred.HasId
 import sangria.schema._
 import sangria.macros.derive._
 
+// Import the Fetcher API to caches results
+import sangria.execution.deferred.Fetcher
 
 object GQLSchemas {
   // Define GQL Type
@@ -17,6 +20,11 @@ object GQLSchemas {
       Field("description", StringType, description = Option("details of each link"), resolve = _.value.description)
     )
   )
+
+  // ================== Fetchers ======================== //
+  val linksFetcher: Fetcher[ApplicationContext, Link, Link, Int] = Fetcher(
+    (ctx: ApplicationContext, ids: Seq[Int]) => ctx.dao.getLinks(ids)
+  )(HasId(_.id))
 
   val SupplierType: ObjectType[Unit, Supplier] = deriveObjectType[Unit, Supplier]()
   val CoffeeType: ObjectType[Unit, Coffee] = deriveObjectType[Unit, Coffee]()
