@@ -27,7 +27,7 @@ object Server extends App {
   }
 
 
-  Http()(actorSystem).bindAndHandle(route, "localhost", port)(actorMaterializer)
+  Http()(actorSystem).bindAndHandle(route, "0.0.0.0", port)(actorMaterializer)
   println(s"The server is running at: http://localhost:${port}")
 
   def shutdown = {
